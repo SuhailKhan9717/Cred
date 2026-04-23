@@ -71,7 +71,7 @@ const ComparisonTable: React.FC = () => {
           <X className="w-4 h-4 text-muted-foreground" />
         </div>
       );
-    }
+    } 
     return (
       <span className={`font-semibold ${highlight ? 'bg-accent/20 px-3 py-2 rounded-lg' : ''}`}>
         {value}

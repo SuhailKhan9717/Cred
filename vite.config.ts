@@ -17,11 +17,13 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
+       // some changes
         secure: false,
       }
     }
   }
 })
+
 
 // import { defineConfig } from 'vite'
 // import react from '@vitejs/plugin-react'
