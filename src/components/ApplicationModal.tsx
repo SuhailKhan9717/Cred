@@ -1,378 +1,383 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, CheckCircle, Loader2, AlertCircle, User, Phone, Mail, Briefcase, IndianRupee, Calendar } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import type { CreditCard, PersonalLoan } from '../data/mockData';
-import type { CreditCardReal, InsurancePlanReal } from '../data/ProductionData';
+                import React, { useState, useEffect, useRef } from 'react';
+                import { motion, AnimatePresence } from 'framer-motion';
+                import { X, Shield, CheckCircle, Loader2, AlertCircle, User, Phone, Mail, Briefcase, IndianRupee, Calendar } from 'lucide-react';
+                import { Button } from './ui/button';
+                import { Input } from './ui/input';
+                import { Label } from './ui/label';
+                import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+                import type { CreditCard, PersonalLoan } from '../data/mockData';
+                import type { CreditCardReal, InsurancePlanReal } from '../data/ProductionData';
 
-interface ApplicationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  product: CreditCardReal | PersonalLoan | InsurancePlanReal | null;
-  productType: 'card' | 'loan' | 'insurance';
-  onNavigate: (page: string) => void;
 
-}
 
-interface FormData {
-  fullName: string;
-  mobile: string;
-  email: string;
-  employmentType: string;
-  monthlyIncome: string;
-  date: string;
+                interface ApplicationModalProps { 
+                  isOpen: boolean;
+                  onClose: () => void;
+                  product: CreditCardReal | PersonalLoan | InsurancePlanReal | null;
+                  productType: 'card' | 'loan' | 'insurance';
+                  onNavigate: (page: string) => void;
 
-}
+                }
 
-interface FormErrors {
-  fullName?: string;
-  mobile?: string;
-  email?: string;
-  employmentType?: string;
-  monthlyIncome?: string;
-  date?: string;
-}
 
-const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose, product, productType, onNavigate }) => {
-  const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    mobile: '',
-    email: '',
-    employmentType: '',
-    monthlyIncome: '',
-    date: ''
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const firstInputRef = useRef<HTMLInputElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const [termsAccepts, setTermsAccepts] = useState(false)
+                interface FormData {
+                  fullName: string;
+                  mobile: string;
+                  email: string;
+                  employmentType: string;
+                  monthlyIncome: string;
+                  date: string;
 
-  // Focus trap and initial focus
-  useEffect(() => {
-    if (isOpen && firstInputRef.current) {
-      firstInputRef.current.focus();
-    }
-  }, [isOpen]);
+                }
 
-  // Close on Escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
-    };
-  }, [isOpen, onClose]);
+                interface FormErrors {
+                  fullName?: string;
+                  mobile?: string;
+                  email?: string;
+                  employmentType?: string;
+                  monthlyIncome?: string;
+                  date?: string;
+                }
 
-  // Validation functions
-  const validateName = (name: string): string | undefined => {
-    if (!name.trim()) return 'Name is required';
-    if (!/^[a-zA-Z\s]{3,}$/.test(name.trim())) return 'Please enter a valid name (min 3 letters)';
-    return undefined;
-  };
+                const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose, product, productType, onNavigate }) => {
+                  const [formData, setFormData] = useState<FormData>({
+                    fullName: '',
+                    mobile: '',
+                    email: '',
+                    employmentType: '',
+                    monthlyIncome: '',
+                    date: ''
+                  });
+                  const [errors, setErrors] = useState<FormErrors>({});
+                  const [touched, setTouched] = useState<Record<string, boolean>>({});
+                  const [isSubmitting, setIsSubmitting] = useState(false);
+                  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+                  const firstInputRef = useRef<HTMLInputElement>(null);
+                  const modalRef = useRef<HTMLDivElement>(null);
+                  const [termsAccepts, setTermsAccepts] = useState(false)
 
-  const validateMobile = (mobile: string): string | undefined => {
-    if (!mobile) return 'Mobile number is required';
-    if (!/^[6-9]\d{9}$/.test(mobile)) return 'Please enter a valid 10-digit mobile number';
-    return undefined;
-  };
+                  // Focus trap and initial focus
+                  useEffect(() => {
+                    if (isOpen && firstInputRef.current) {
+                      firstInputRef.current.focus();
+                    }
+                  }, [isOpen]);
 
-  const validateEmail = (email: string): string | undefined => {
-    if (!email) return 'Email is required';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Please enter a valid email address';
-    return undefined;
-  };
+                  // Close on Escape key
+                  useEffect(() => {
+                    const handleEscape = (e: KeyboardEvent) => {
+                      if (e.key === 'Escape') onClose();
+                    };
+                    if (isOpen) {
+                      document.addEventListener('keydown', handleEscape);
+                      document.body.style.overflow = 'hidden';
+                    }
+                    return () => {
+                      document.removeEventListener('keydown', handleEscape);
+                      document.body.style.overflow = '';
+                    };
+                  }, [isOpen, onClose]);
 
-  const validateEmployment = (employment: string): string | undefined => {
-    if (!employment) return 'Please select employment type';
-    return undefined;
-  };
+                  // Validation functions
+                  const validateName = (name: string): string | undefined => {
+                    if (!name.trim()) return 'Name is required';
+                    if (!/^[a-zA-Z\s]{3,}$/.test(name.trim())) return 'Please enter a valid name (min 3 letters)';
+                    return undefined;
+                  };
 
-  const validateIncome = (income: string): string | undefined => {
-    if (productType === 'loan') {
-      if (!income) return 'Monthly income is required';
-      const incomeNum = parseInt(income);
-      if (isNaN(incomeNum) || incomeNum < 15000) return 'Minimum income should be ₹15,000';
-    }
-    return undefined;
-  };
+                  const validateMobile = (mobile: string): string | undefined => {
+                    if (!mobile) return 'Mobile number is required';
+                    if (!/^[6-9]\d{9}$/.test(mobile)) return 'Please enter a valid 10-digit mobile number';
+                    return undefined;
+                  };
 
-  const validateField = (field: keyof FormData, value: string): string | undefined => {
-    switch (field) {
-      case 'fullName': return validateName(value);
-      case 'mobile': return validateMobile(value);
-      case 'email': return validateEmail(value);
-      case 'employmentType': return validateEmployment(value);
-      case 'monthlyIncome': return validateIncome(value);
-      case 'date': return value ? undefined : 'Please select a date';
-      default: return undefined;
-    }
-  };
+                  const validateEmail = (email: string): string | undefined => {
+                    if (!email) return 'Email is required';
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Please enter a valid email address';
+                    return undefined;
+                  };
 
-  const handleChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (touched[field]) {
-      setErrors(prev => ({ ...prev, [field]: validateField(field, value) }));
-    }
-    if (submitStatus !== 'idle') setSubmitStatus('idle');
-  };
+                  const validateEmployment = (employment: string): string | undefined => {
+                    if (!employment) return 'Please select employment type';
+                    return undefined;
+                  };
 
-  const handleBlur = (field: keyof FormData) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
-    setErrors(prev => ({ ...prev, [field]: validateField(field, formData[field]) }));
-  };
+                  const validateIncome = (income: string): string | undefined => {
+                    if (productType === 'loan') {
+                      if (!income) return 'Monthly income is required';
+                      const incomeNum = parseInt(income);
+                      if (isNaN(incomeNum) || incomeNum < 15000) return 'Minimum income should be ₹15,000';
+                    }
+                    return undefined;
+                  };
 
-  const validateAll = (): boolean => {
-    const newErrors: FormErrors = {
-      fullName: validateName(formData.fullName),
-      mobile: validateMobile(formData.mobile),
-      email: validateEmail(formData.email),
-      employmentType: validateEmployment(formData.employmentType),
-      monthlyIncome: productType === 'loan' ? validateIncome(formData.monthlyIncome) : undefined
-    };
-    setErrors(newErrors);
-    setTouched({ fullName: true, mobile: true, email: true, employmentType: true, monthlyIncome: true, date: true });
-    return !Object.values(newErrors).some(e => e);
-  };
+                  const validateField = (field: keyof FormData, value: string): string | undefined => {
+                    switch (field) {
+                      case 'fullName': return validateName(value);
+                      case 'mobile': return validateMobile(value);
+                      case 'email': return validateEmail(value);
+                      case 'employmentType': return validateEmployment(value);
+                      case 'monthlyIncome': return validateIncome(value);
+                      case 'date': return value ? undefined : 'Please select a date';
+                      default: return undefined;
+                    }
+                  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateAll()) return;
-    if (!termsAccepts) {
-      alert('Please accepts terms and condition')
-      return;
-    }
+                  const handleChange = (field: keyof FormData, value: string) => {
+                    setFormData(prev => ({ ...prev, [field]: value }));
+                    if (touched[field]) {
+                      setErrors(prev => ({ ...prev, [field]: validateField(field, value) }));
+                    }
+                    if (submitStatus !== 'idle') setSubmitStatus('idle');
+                  };
 
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
+                  const handleBlur = (field: keyof FormData) => {
+                    setTouched(prev => ({ ...prev, [field]: true }));
+                    setErrors(prev => ({ ...prev, [field]: validateField(field, formData[field]) }));
+                  };
 
-    // Prepare data to send to Vercel Backend
-    let productName = 'Unknown';
-    if (product) {
-      if ('cardName' in product) {
-        // It's a Credit Card
-        productName = product.cardName;
-      } else if ('providerName' in product) {
-        // It's Insurance
-        productName = product.providerName;
-        // Tip: You could also do `${product.providerName} ${product.planName}` if you want more detail!
-      } else if ('bankName' in product) {
-        // It's a Personal Loan
-        productName = `${product.bankName} Personal Loan`;
-      }
-    }
-    let finalBankName = 'Unknown';
-    if (product) {
-      // If the product has a 'bankName' property (Cards & Loans)
-      if ('bankName' in product) {
-        finalBankName = product.bankName;
-      }
-      // If the product has a 'providerName' property (Insurance)
-      else if ('providerName' in product) {
-        finalBankName = product.providerName;
-      }
-    }
+                  const validateAll = (): boolean => {
+                    const newErrors: FormErrors = {
+                      fullName: validateName(formData.fullName),
+                      mobile: validateMobile(formData.mobile),
+                      email: validateEmail(formData.email),
+                      employmentType: validateEmployment(formData.employmentType),
+                      monthlyIncome: productType === 'loan' ? validateIncome(formData.monthlyIncome) : undefined
+                    };
 
-    try {
-      // Call the Vercel API Route we created
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          productName,
-          bankName: finalBankName,
-          productType
-        }),
-      });
+                    setErrors(newErrors);
+                    setTouched({ fullName: true, mobile: true, email: true, employmentType: true, monthlyIncome: true, date: true });
+                    return !Object.values(newErrors).some(e => e);
+                  };
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
 
-      // Success handling
-      setSubmitStatus('success');
+                  const handleSubmit = async (e: React.FormEvent) => {
+                    e.preventDefault();
+                    if (!validateAll()) return;
+                    if (!termsAccepts) {
+                      alert('Please accepts terms and condition')
+                      return;
+                    }
 
-      setTimeout(() => {
-        if (product?.applyUrl  && ('cardName' in product)) {
-          // 3. Redirect the CURRENT tab to the bank's website
-          window.location.href = product.applyUrl;
-        } else {
-          // Fallback just in case there is no URL
-          onClose();
-          setFormData({ fullName: '', mobile: '', email: '', employmentType: '', monthlyIncome: '', date: '' });
-          setTouched({});
-          setErrors({});
-          setSubmitStatus('idle');
-        }
+                    setIsSubmitting(true);
+                    setSubmitStatus('idle');
 
-      }, 1500);
+                    // Prepare data to send to Vercel Backend
+                    let productName = 'Unknown';
+                    if (product) {
+                      if ('cardName' in product) {
+                        // It's a Credit Card
+                        productName = product.cardName;
+                      } else if ('providerName' in product) {
+                        // It's Insurance
+                        productName = product.providerName;
+                        // Tip: You could also do `${product.providerName} ${product.planName}` if you want more detail!
+                      } else if ('bankName' in product) {
+                        // It's a Personal Loan
+                        productName = `${product.bankName} Personal Loan`;
+                      }
+                    }
+                    let finalBankName = 'Unknown';
+                    if (product) {
+                      // If the product has a 'bankName' property (Cards & Loans)
+                      if ('bankName' in product) {
+                        finalBankName = product.bankName;
+                      }
+                      // If the product has a 'providerName' property (Insurance)
+                      else if ('providerName' in product) {
+                        finalBankName = product.providerName;
+                      }
+                    }
 
-    } catch (error) {
-      console.error('Submission failed:', error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+                    try {
+                      // Call the Vercel API Route we created
+                      const response = await fetch('https://credgrow.in/api/send-email', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          ...formData,
+                          productName,
+                          bankName: finalBankName,
+                          productType
+                        }),
+                      });
 
-  if (!product) return null;
+                      if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                      }
 
-  let productName = 'Unknown';
-  if (product) {
-    if ('cardName' in product) {
-      // It's a Credit Card
-      productName = product.cardName;
-    } else if ('providerName' in product) {
-      // It's Insurance
-      productName = product.providerName;
-      // Tip: You could also do `${product.providerName} ${product.planName}` if you want more detail!
-    } else if ('bankName' in product) {
-      // It's a Personal Loan
-      productName = `${product.bankName} Personal Loan`;
-    }
-  }
-  let bankName = 'Unknown';
-  if (product) {
-    // If the product has a 'bankName' property (Cards & Loans)
-    if ('bankName' in product) {
-      bankName = product.bankName;
-    }
-    // If the product has a 'providerName' property (Insurance)
-    else if ('providerName' in product) {
-      bankName = product.providerName;
-    }
-  }
+                      // Success handling
+                      setSubmitStatus('success');
+                
+                      setTimeout(() => {
+                        if (product?.applyUrl  && ('cardName' in product)) {
+                          // 3. Redirect the CURRENT tab to the bank's website
+                          window.location.href = product.applyUrl;
+                        } else {
+                          // Fallback just in case there is no URL
+                          onClose();
+                          setFormData({ fullName: '', mobile: '', email: '', employmentType: '', monthlyIncome: '', date: '' });
+                          setTouched({});
+                          setErrors({});
+                          setSubmitStatus('idle');
+                        }
 
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={onClose}
-          />
+                      }, 1500);
 
-          <motion.div
-            ref={modalRef}
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-          >
-            {/* Header */}
-            <div className="sticky top-0 bg-card border-b border-border p-6 z-10">
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Close modal"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <h2 id="modal-title" className="text-xl font-bold text-foreground pr-8">
-                Apply for {productName}
-              </h2>
-              <p className="text-sm text-muted-foreground mt-1">{bankName}</p>
-              <p className="text-xs text-success flex items-center gap-1 mt-2">
-                <Shield className="w-3 h-3" aria-hidden="true" />
-                Your application is 100% secure
-              </p>
-            </div>
+                    } catch (error) {
+                      console.error('Submission failed:', error);
+                      setSubmitStatus('error');
+                    } finally {
+                      setIsSubmitting(false);
+                    }
+                  };
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-5">
-              {/* Status Messages */}
-              {submitStatus === 'success' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-success/10 border border-success/30 rounded-lg p-4 flex items-center gap-3"
-                  role="alert"
-                >
-                  <CheckCircle className="w-5 h-5 text-success shrink-0" aria-hidden="true" />
-                  <span className="text-success font-medium">Application submitted! Redirecting...</span>
-                </motion.div>
-              )}
+                  if (!product) return null;
 
-              {submitStatus === 'error' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3"
-                  role="alert"
-                >
-                  <AlertCircle className="w-5 h-5 text-destructive shrink-0" aria-hidden="true" />
-                  <span className="text-destructive font-medium">Something went wrong. Please try again.</span>
-                </motion.div>
-              )}
+                  let productName = 'Unknown';
+                  if (product) {
+                    if ('cardName' in product) {
+                      // It's a Credit Card
+                      productName = product.cardName;
+                    } else if ('providerName' in product) {
+                      // It's Insurance
+                      productName = product.providerName;
+                      // Tip: You could also do `${product.providerName} ${product.planName}` if you want more detail!
+                    } else if ('bankName' in product) {
+                      // It's a Personal Loan
+                      productName = `${product.bankName} Personal Loan`;
+                    }
+                  }
+                  let bankName = 'Unknown';
+                  if (product) {
+                    // If the product has a 'bankName' property (Cards & Loans)
+                    if ('bankName' in product) {
+                      bankName = product.bankName;
+                    }
+                    // If the product has a 'providerName' property (Insurance)
+                    else if ('providerName' in product) {
+                      bankName = product.providerName;
+                    }
+                  }
 
-              {/* Full Name */}
-              <div>
-                <Label htmlFor="fullName" className="flex items-center gap-2 mb-2">
-                  <User className="w-4 h-4 text-primary" aria-hidden="true" />
-                  Full Name
-                </Label>
-                <div className="relative">
-                  <Input
-                    ref={firstInputRef}
-                    id="fullName"
-                    type="text"
-                    value={formData.fullName}
-                    onChange={(e) => handleChange('fullName', e.target.value)}
-                    onBlur={() => handleBlur('fullName')}
-                    className={`${errors.fullName && touched.fullName ? 'border-destructive' : ''} pr-10`}
-                    placeholder="Enter your full name"
-                    aria-invalid={!!errors.fullName}
-                    aria-describedby={errors.fullName ? 'fullName-error' : undefined}
-                  />
-                  {touched.fullName && !errors.fullName && (
-                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-success" aria-hidden="true" />
-                  )}
-                </div>
-                {errors.fullName && touched.fullName && (
-                  <p id="fullName-error" className="text-sm text-destructive mt-1 flex items-center gap-1" role="alert">
-                    <AlertCircle className="w-3 h-3" aria-hidden="true" />
-                    {errors.fullName}
-                  </p>
-                )}
-              </div>
+                  return (
+                    <AnimatePresence>
+                      {isOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                            onClick={onClose}
+                          />
 
-              {/* Mobile Number */}
-              <div>
-                <Label htmlFor="mobile" className="flex items-center gap-2 mb-2">
-                  <Phone className="w-4 h-4 text-primary" aria-hidden="true" />
-                  Mobile Number
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="mobile"
-                    type="tel"
-                    value={formData.mobile}
-                    onChange={(e) => handleChange('mobile', e.target.value.replace(/\D/g, '').slice(0, 10))}
-                    onBlur={() => handleBlur('mobile')}
-                    className={`${errors.mobile && touched.mobile ? 'border-destructive' : ''} pr-10`}
-                    placeholder="Enter 10-digit mobile number"
-                    aria-invalid={!!errors.mobile}
-                    aria-describedby={errors.mobile ? 'mobile-error' : undefined}
+                          <motion.div
+                            ref={modalRef}
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="modal-title"
+                          >
+                            {/* Header */}
+                            <div className="sticky top-0 bg-card border-b border-border p-6 z-10">
+                              <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                                aria-label="Close modal"
+                              >
+                                <X className="w-5 h-5" />
+                              </button>
+                              <h2 id="modal-title" className="text-xl font-bold text-foreground pr-8">
+                                Apply for {productName}
+                              </h2>
+                              <p className="text-sm text-muted-foreground mt-1">{bankName}</p>
+                              <p className="text-xs text-success flex items-center gap-1 mt-2">
+                                <Shield className="w-3 h-3" aria-hidden="true" />
+                                Your application is 100% secure
+                              </p>
+                            </div>
+
+                            {/* Form */}
+                            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                              {/* Status Messages */}
+                              {submitStatus === 'success' && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="bg-success/10 border border-success/30 rounded-lg p-4 flex items-center gap-3"
+                                  role="alert"
+                                >
+                                  <CheckCircle className="w-5 h-5 text-success shrink-0" aria-hidden="true" />
+                                  <span className="text-success font-medium">Application submitted! Redirecting...</span>
+                                </motion.div>
+                              )}
+
+                              {submitStatus === 'error' && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3"
+                                  role="alert"
+                                >
+                                  <AlertCircle className="w-5 h-5 text-destructive shrink-0" aria-hidden="true" />
+                                  <span className="text-destructive font-medium">Something went wrong. Please try again.</span>
+                                </motion.div>
+                              )}
+
+                              {/* Full Name */}
+                              <div>
+                                <Label htmlFor="fullName" className="flex items-center gap-2 mb-2">
+                                  <User className="w-4 h-4 text-primary" aria-hidden="true" />
+                                  Full Name
+                                </Label>
+                                <div className="relative">
+                                  <Input
+                                    ref={firstInputRef}
+                                    id="fullName"
+                                    type="text"
+                                    value={formData.fullName}
+                                    onChange={(e) => handleChange('fullName', e.target.value)}
+                                    onBlur={() => handleBlur('fullName')}
+                                    className={`${errors.fullName && touched.fullName ? 'border-destructive' : ''} pr-10`}
+                                    placeholder="Enter your full name"
+                                    aria-invalid={!!errors.fullName}
+                                    aria-describedby={errors.fullName ? 'fullName-error' : undefined}
+                                  />
+                                  {touched.fullName && !errors.fullName && (
+                                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-success" aria-hidden="true" />
+                                  )}
+                                </div>
+                                {errors.fullName && touched.fullName && (
+                                  <p id="fullName-error" className="text-sm text-destructive mt-1 flex items-center gap-1" role="alert">
+                                    <AlertCircle className="w-3 h-3" aria-hidden="true" />
+                                    {errors.fullName}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* Mobile Number */}
+                              <div>
+                                <Label htmlFor="mobile" className="flex items-center gap-2 mb-2">
+                                  <Phone className="w-4 h-4 text-primary" aria-hidden="true" />
+                                  Mobile Number
+                                </Label>
+                                <div className="relative">
+                                  <Input
+                                    id="mobile"
+                                    type="tel"
+                                    value={formData.mobile}
+                                    onChange={(e) => handleChange('mobile', e.target.value.replace(/\D/g, '').slice(0, 10))}
+                                    onBlur={() => handleBlur('mobile')}
+                                    className={`${errors.mobile && touched.mobile ? 'border-destructive' : ''} pr-10`}
+                                    placeholder="Enter 10-digit mobile number"
+                                    aria-invalid={!!errors.mobile}
+                                    aria-describedby={errors.mobile ? 'mobile-error' : undefined}
                   />
                   {touched.mobile && !errors.mobile && (
                     <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-success" aria-hidden="true" />
@@ -435,6 +440,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose, pr
                     aria-invalid={!!errors.employmentType}
                   >
                     <SelectValue placeholder="Select employment type" />
+
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="salaried">Salaried</SelectItem>

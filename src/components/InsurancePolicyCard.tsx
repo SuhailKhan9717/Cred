@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Star, Check, Award, ArrowRight, Shield, IndianRupee } from 'lucide-react';
-import type { CreditCard, InsurancePlan, PersonalLoan } from '../data/mockData';
+import type { CreditCard, InsurancePlan, PersonalLoan } from '../data/mockData';  
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import type { InsurancePlanReal } from '../data/ProductionData';
@@ -16,7 +16,7 @@ interface InsurancePolicyCardProps {
 
 const logos: Record<string, string> = {
   
-  "HDFC ERGO": "/insurance/hdfc.png",
+  "HDFC ERGO": "/insurance/hdfc.png", 
   "Bajaj Allianz" : "/insurance/bajaj.jpg",
   "ICICI Lombard" : "/insurance/icici.avif", 
   "LIC" : "/insurance/lic.jpg", 
@@ -36,7 +36,7 @@ const InsurancePolicyCard: React.FC<InsurancePolicyCardProps> = ({ card, onApply
     Motor: 'bg-accent/10 text-accent',
     Travel: 'bg-cta/10 text-cta',
     Home: 'bg-muted text-muted-foreground'
-  };
+  };  
 
   const navigate = useNavigate()
 

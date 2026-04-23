@@ -5,12 +5,12 @@ import type { CreditCard } from '../data/mockData';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import type { CreditCardReal } from '../data/ProductionData';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
 
 interface CreditCardCardProps {
   card: CreditCardReal;
   onApply: (card: CreditCardReal) => void;
-}
+} 
 
 const bankLogos: Record<string, string> = {
   "Kotak Mahindra Bank": "./banks/kotak-bank.png",
@@ -18,9 +18,10 @@ const bankLogos: Record<string, string> = {
   "Axis Bank": "/banks/axis-bank.png",
   "SBI Card": "/banks/sbi-bank.jpg",
   "ICICI Bank": "/banks/icici-bank.webp",
-  "IDFC FIRST Bank": "/banks/idfc-bank.jpg",
+ "IDFC FIRST Bank": "/banks/idfc-bank.jpg", 
   "AU Small Finance Bank": "/banks/au-bank.png",
   "YES Bank": "/banks/yes-bank.png"
+  
 };
 
 const bankApplyUrls: Record<string, string> = {
@@ -30,8 +31,14 @@ const bankApplyUrls: Record<string, string> = {
   "SBI Card": "https://customer.credilio.in/credit-card/utm-broadcast/SBI/?utm_advisor_code=CRD0067742",
   "YES Bank": "https://customer.credilio.in/credit-card/utm-broadcast/YES/?utm_advisor_code=CRD0067742",
   "BOB": "https://mycard.bobcard.tech/?utm_source=MMM_xyz&utm_medium=EARNTRA&utm_campaign=943941",
-  "IDFC FIRST Bank": "https://www.idfcfirst.bank.in/credit-card/ntb-diy/apply?utm_source=Partner&utm_medium=FinsangIndia&utm_campaign=SKYJP_MYCARD_web"
+  "IDFC FIRST Bank": "https://www.idfcfirst.bank.in/credit-card/ntb-diy/apply?utm_source=Partner&utm_medium=FinsangIndia&utm_campaign=SKYJP_MYCARD_web",
+  "AU Small Finance Bank": "https://cconboarding.au.bank.in/auccself/#/landing?utm_source=pw&utm_medium=banner&utm_campaign=pw-display-campaign_Credweb",
+ "IDFC FIRST Bank1": "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486"
+
+
 };
+
+
 
 const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
   const formatCurrency = (amount: number) => {
@@ -44,14 +51,25 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
     Cashback: 'bg-success/10 text-success',
     Travel: 'bg-primary/10 text-primary',
     Shopping: 'bg-cta/10 text-cta',
-    Fuel: 'bg-accent/10 text-accent'
+    Fuel: 'bg-accent/10 text-accent'  
+    
   };
 
-  const handleApplyClick = () => {
+  const handleApplyClick = (id?: string) => {
     // 1. Get the overriding URL for this specific bank
-    const overrideUrl = bankApplyUrls[card.bankName];
+    let overrideUrl = bankApplyUrls[card.bankName];
 
     // 2. Check if the URL exists and is not an empty string
+    // if( card.bankName === "IDFC FIRST Bank" &&
+    // card.cardName === "LIC Select Credit Card"){
+    //   overrideUrl = "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486";
+    // };
+    if(id === "idfc-lic-select"){
+  overrideUrl = "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486";
+    // };
+    }
+
+
     if (overrideUrl) {
       // Create a copy of the card with the updated link
       const updatedCard = { ...card, applyUrl: overrideUrl };
@@ -62,12 +80,14 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
     }
   };
 
+
+  
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -8 }}z
       transition={{ duration: 0.3 }}
       className="bg-card rounded-2xl shadow-card hover:shadow-card-hover border border-border overflow-hidden group"
     >
@@ -95,6 +115,7 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
       {/* Content */}
       <div className="p-6">
         {/* Header */}
+        {/* // card container */}
         <div className="mb-4">
           <p className="text-sm font-medium text-muted-foreground">{card.bankName}</p>
           <h3 className="text-xl font-bold text-foreground mt-1">{card.cardName}</h3>
@@ -156,11 +177,11 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
 
         {/* CTA */}
         <Button
-          onClick={handleApplyClick}
+          onClick={() => handleApplyClick(card.id)}
           // onClick={() =>navigate(card.applyUrl)}
           className="w-full bg-cta hover:bg-cta/90 text-cta-foreground font-semibold group/btn"
         >         
-          
+          Apply Now 
           <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" aria-hidden="true" />
         </Button>
       </div>

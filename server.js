@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Load environment variables from .env file
-dotenv.config();
+dotenv.config();  
 
 // Recreate __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -42,6 +42,8 @@ app.post('/api/send-email', async (req, res) => {
       year: 'numeric'
     })
   : 'Not Provided';
+
+    console.log(process.env.EMAIL_USER, 'checking env')
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
