@@ -87,7 +87,7 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      whileHover={{ y: -8 }}z
+      whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
       className="bg-card rounded-2xl shadow-card hover:shadow-card-hover border border-border overflow-hidden group"
     >

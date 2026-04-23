@@ -256,6 +256,7 @@
                     if ('bankName' in product) {
                       bankName = product.bankName;
                     }
+
                     // If the product has a 'providerName' property (Insurance)
                     else if ('providerName' in product) {
                       bankName = product.providerName;
