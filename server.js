@@ -23,8 +23,10 @@ app.use(express.json());
 
 // 1. Send Email Route (Applications)
 app.post('/api/send-email', async (req, res) => {
-  const { fullName, mobile, email, date, employmentType, monthlyIncome, productName, bankName, productType } = req.body;
-
+  const { fullName, mobile, email, date, employmentType, monthlyIncome, productName,refer, bankName, productType } = req.body;
+ // 🔍 ADD THIS DEBUG LOG
+  
+  
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -62,6 +64,7 @@ app.post('/api/send-email', async (req, res) => {
             <tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;"><strong>Email:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">${email}</td></tr>
             <tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;"><strong>Date:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">${formattedDate}</td></tr>
             <tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;"><strong>Employment:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; text-transform: capitalize;">${employmentType}</td></tr>
+            ${refer ? `<tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;"><strong>Refer By:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">${refer}</td></tr>` : ''}
             ${monthlyIncome ? `<tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;"><strong>Monthly Income:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">₹${monthlyIncome}</td></tr>` : ''}
           </table>
           <br/>

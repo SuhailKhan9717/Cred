@@ -5,12 +5,12 @@ import type { CreditCard } from '../data/mockData';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import type { CreditCardReal } from '../data/ProductionData';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 interface CreditCardCardProps {
   card: CreditCardReal;
   onApply: (card: CreditCardReal) => void;
-} 
+}
 
 const bankLogos: Record<string, string> = {
   "Kotak Mahindra Bank": "./banks/kotak-bank.png",
@@ -18,10 +18,10 @@ const bankLogos: Record<string, string> = {
   "Axis Bank": "/banks/axis-bank.png",
   "SBI Card": "/banks/sbi-bank.jpg",
   "ICICI Bank": "/banks/icici-bank.webp",
- "IDFC FIRST Bank": "/banks/idfc-bank.jpg", 
+  "IDFC FIRST Bank": "/banks/idfc-bank.jpg",
   "AU Small Finance Bank": "/banks/au-bank.png",
   "YES Bank": "/banks/yes-bank.png"
-  
+
 };
 
 const bankApplyUrls: Record<string, string> = {
@@ -33,7 +33,7 @@ const bankApplyUrls: Record<string, string> = {
   "BOB": "https://mycard.bobcard.tech/?utm_source=MMM_xyz&utm_medium=EARNTRA&utm_campaign=943941",
   "IDFC FIRST Bank": "https://www.idfcfirst.bank.in/credit-card/ntb-diy/apply?utm_source=Partner&utm_medium=FinsangIndia&utm_campaign=SKYJP_MYCARD_web",
   "AU Small Finance Bank": "https://cconboarding.au.bank.in/auccself/#/landing?utm_source=pw&utm_medium=banner&utm_campaign=pw-display-campaign_Credweb",
- "IDFC FIRST Bank1": "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486"
+  "IDFC FIRST Bank1": "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486"
 
 
 };
@@ -51,8 +51,8 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
     Cashback: 'bg-success/10 text-success',
     Travel: 'bg-primary/10 text-primary',
     Shopping: 'bg-cta/10 text-cta',
-    Fuel: 'bg-accent/10 text-accent'  
-    
+    Fuel: 'bg-accent/10 text-accent'
+
   };
 
   const handleApplyClick = (id?: string) => {
@@ -64,9 +64,9 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
     // card.cardName === "LIC Select Credit Card"){
     //   overrideUrl = "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486";
     // };
-    if(id === "idfc-lic-select"){
-  overrideUrl = "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486";
-    // };
+    if (id === "idfc-lic-select") {
+      overrideUrl = "https://www.idfcfirst.bank.in/credit-card/ntb-diy/lic-standalone?utm_source=LIC_CSL_Employee&utm_medium=LIC_CSL&utm_campaign=Emp_D170000486";
+      // };
     }
 
 
@@ -81,7 +81,7 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
   };
 
 
-  
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -119,7 +119,7 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
         <div className="mb-4">
           <p className="text-sm font-medium text-muted-foreground">{card.bankName}</p>
           <h3 className="text-xl font-bold text-foreground mt-1">{card.cardName}</h3>
-          
+
           {/* Rating */}
           <div className="flex items-center gap-1 mt-2" aria-label={`Rating: ${card.rating} out of 5 stars`}>
             {[...Array(5)].map((_, i) => (
@@ -180,8 +180,8 @@ const CreditCardCard: React.FC<CreditCardCardProps> = ({ card, onApply }) => {
           onClick={() => handleApplyClick(card.id)}
           // onClick={() =>navigate(card.applyUrl)}
           className="w-full bg-cta hover:bg-cta/90 text-cta-foreground font-semibold group/btn"
-        >         
-          Apply Now 
+        >
+          Apply Now
           <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" aria-hidden="true" />
         </Button>
       </div>
